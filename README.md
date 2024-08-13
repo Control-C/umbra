@@ -1,5 +1,16 @@
 # Umbra Module
 
+For Google AI Hackathon
+
+Build a creative app that uses Google’s Generative AI tools. Push the boundaries of what Gen AI apps can do with Gemini!
+
+## Disclaimer: MVP Code Ahead 🚧
+
+Welcome to my MVP (Minimum Viable Product) code, where speed meets creativity! This code was whipped up faster than your favorite coffee, so it’s designed to work—not win any “Best Practices” awards. It might not be pretty, it might not be perfect, but it gets the job done. Maintenance? We’ll cross that bridge when we get there. For now, enjoy the ride! 🚀
+
+Feel free to tweak it if you want!
+
+
 ## Overview
 
 The **Umbra** module is a powerful tool designed to redact Personally Identifiable Information (PII) from textual data locally using an AI language model. This redacted text can then be securely sent to **Gemini** in the cloud for various generative tasks. Once a response is returned, Umbra seamlessly reintroduces the redacted PII back into the original document, ensuring data integrity and confidentiality throughout the process.
