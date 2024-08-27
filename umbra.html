@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Umbra Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: rgba(255, 255, 255, 0.8);
+      min-height: 100vh;
+      line-height: 1.5em;
+    }
+
+    header {
+      text-align: center;
+      margin: 3em 0 2em 0;
+    }
+
+    section {
+      width: 90%;
+      max-width: 800px;
+      margin-bottom: 40px;
+      background-color: #F5F5F5;
+      padding: 1em 2em;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      color: #4d4d4f;
+    }
+
+    aside {
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 0.5em 2em;
+    }
+
+    footer {
+      margin: 40px 2em;
+      text-align: center;
+      /* color: #777; */
+    }
+
+    a {
+      /* color: rgba(255, 255, 255, 0.8); */
+      color: inherit;
+    }
+
+    dt,
+    dd {
+      display: inline;
+      margin-left: 0.5em;
+    }
+
+    li {
+      padding-bottom: 1em;
+    }
+
+    small {
+      font-style: italic;
+    }
+
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #results,
+    .box {
+      width: 60%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      overflow: auto;
+    }
+
+    #results {
+      min-height: 5em;
+    }
+
+    .highlight {
+      /* background-color: yellow; */
+      background-color: black;
+    }
+
+    .highlight:hover {
+      background-color: yellow;
+      /* Background color when hovered */
+      color: black;
+      /* Text color when hovered for better contrast */
+      /* https://www.svgviewer.dev/svg-to-png */
+      cursor: url('moon.png'), auto;
+      /* Custom cursor on hover */
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      width: 60%;
+      margin: 10px 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* input, textarea, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        } */
+
+
+
+    .space-for-spinner {
+      background-color: inherit;
+      margin-top: 20px;
+      height: 200px;
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+    }
+
+    .spinner {
+      border: 16px solid white;
+      /* Light grey */
+      border-top: 16px solid #2354ad;
+      /* Blue */
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .chatbot-container {
+      width: 100%;
+      display: flex;
+      margin-bottom: 1.5em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-right: 1em;
+      border: none;
+      border-radius: 5px;
+      /* background-color: #f0f0f0; */
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+      outline: none;
+    }
+
+    textarea {
+      outline: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #2354ad;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4d4d4f;
+    }
+
+
+    .card-contents-row {
+      display: flex;
+      justify-content: space-between;
+      /* margin-right: 2em; */
+      /* background-color: red; */
+
+
+    }
+
+    .column-half {
+      width: 50%;
+    }
+
+    .column-third {
+      width: 33%;
+    }
+
+    /* div.card-contents-row:last-child {
+      margin-right: 0;
+      background-color: green;
+    } */
+  </style>
+</head>
+
+<body>
+
+
+  <header>
+    <h1>Umbra Project Demo</h1>
+    <p><strong>Umbra is a privacy-first tool that prevents your private data from being shared to online
+        services.</strong></p>
+  </header>
+  <main class="container">
+    <section>
+      <h2>Step 1</h2>
+      <div class="card-contents-row">
+        <div class="column-half">
+          <h3>Checklist</h3>
+          <p>Confirm the following before proceeding to step 2:</p>
+          <ol>
+            <li>Make sure you are using the Chrome browser.</li>
+            <li>Make sure you've <a href="index.html">entered an API key</a>.</li>
+          </ol>
+        </div>
+        <aside class="column-third">
+          <h3>Key to symbols</h3>
+          <dl>
+            <dt>🧑‍💻</dt>
+            <dd>denotes information in this step is kept on your side</dd>
+            <br />
+            <br />
+            <dt>🌎</dt>
+            <dd>denotes information in this step is sent to third-party services on the internet</dd>
+          </dl>
+        </aside>
+      </div>
+      <hr />
+      <small>This step-by-step demo shows how the Umbra tool works from a technical point of view. To see how it works
+        from
+        a product user experience point of view, visit the <a href='bravo.html'>Bravo demo</a>.</small>
+    </section>
+
+    <section>
+      <h2>Step 2 🧑‍💻 &mdash; an AI on your side</h2>
+      <p>Firstly, download a copy of our Gemini Nano AI model to your machine. Our
+        model had been trained to recognize Personally Identifiable Information (PII).</p>
+      <button>Download AI Model</button>
+      <aside class="space-for-spinner">
+        <div id="loading">
+          <div class="spinner"></div>
+          <p><em>Saving AI model. Please continue to the next step.</em></p>
+        </div>
+      </aside>
+      <hr />
+      <small>Please note for this demo, the model is a 230 MB download and it is not cached. This means if you refresh
+        this web page, you will need to restart the download from scratch.</small>
+    </section>
+
+    <section>
+      <h2>Step 3 🧑‍💻 &mdash; add your information</h2>
+      <p>Type a paragraph of texts containing personally identifiable information, such as a name or a date of birth (an
+        example text has been entered for you):</p>
+      <textarea id="box1" class="box" rows="5"
+        placeholder="Enter texts with Personally Identifiable Information..."></textarea>
+      <p>When the model has finished downloading, a 'Find PII' button appears in this step. Click on it and continue to
+        the next step.</p>
+      <div class="buttons">
+        <button id="getBlack-outButton" onclick="highlightText()" style="display:none;">Find PII</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Step 4 🧑‍💻 &mdash; find PII</h2>
+      <p>Umbra recognizes and masks sensitive information in your texts (hover over the masked areas to reveal the
+        original text):</p>
+      <div class="box" id="results"></div>
+      <!-- <div class="hidden" id="results"> </div> -->
+      <p>When a 'Redact PII' button appears in this step, click on it and continue to the next step.</p>
+      <div class="buttons">
+        <button id="getAnswersButton" style="display:none;" onclick="replaceText(); processText();">Redact PII</button>
+      </div>
+    </section>
+    <section>
+      <h2>Step 5 🌎 &mdash; send to external AI</h2>
+      <h3>5A &mdash; redact PII</h3>
+      <p>Umbra replaces PII with placeholders, ready to be sent to Gemini AI cloud services:</p>
+      <textarea id="box2" class="box" rows="5" placeholder="Text with found PII appears here..."></textarea>
+      <h3>5B &mdash; instruct Gemini AI</h3>
+      <p>What would you like an AI to help you with, using the information in step 5A? Type your instructions to Gemini,
+        then click 'Send to Gemini AI' (an example text has been entered for you):
+      </p>
+      <div class="chatbot-container">
+        <input id="box3-prmpt" type="text" placeholder="Enter a prompt...">
+        <button onclick=" send2api(); ">Send to Gemini AI</button>
+      </div>
+      <!--
+    <textarea id="box3-prmpt" class="box" rows="5" placeholder="Enter a prompt here " ></textarea>
+     <div class="buttons">
+        <button onclick="replaceText(); processText(); send2api(); ">Send off to Gemini AI</button>
+    </div> -->
+    </section>
+
+    <section>
+      <h2>Step 6 🧑‍💻 &mdash; restore PII</h2>
+      <p>Gemini AI performs tasks based on your instructions (in step 5B) and information (in step 5A), then sends back
+        its response:</p>
+      <textarea id="box4" class="box" rows="5" placeholder="Response from Gemini AI appears here..."
+        readonly></textarea>
+      <p>Umbra replaces the redacted information in the response (click on 'Restore PII' then continue to the next
+        step.)</p>
+      <div class="buttons">
+        <button onclick="replaceMarkers()">Restore PII</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Step 7 🧑‍💻 &mdash; complete</h2>
+      <p>Response text is complete and ready for your use:</p>
+      <textarea id="box5" class="box" rows="5" placeholder="Final text appears here..." readonly></textarea>
+      <div class="buttons">
+        <button onclick="copyText()">Copy text to clipboard</button>
+      </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <small>Gemini may display inaccurate info, including about people, so double-check its responses. | <a
+        href="https://support.google.com/gemini/answer/13594961?visit_id=638588064666691455-2002261725&p=privacy_notice&rd=1#privacy_notice">Your
+        privacy and Gemini Apps </a></small>
+  </footer>
+
+  <script>
+    function copyText() {
+      // Get the text field
+      let copyText = document.getElementById("box5");
+      // Select the text field
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // For mobile devices
+      // Copy the text inside the text field
+      navigator.clipboard.writeText(copyText.value);
+      // Alert the copied text
+      alert("Copied the text: '" + copyText.value + "'");
+    } 
+  </script>
+</body>
+</html>
